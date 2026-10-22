@@ -1,11 +1,13 @@
 # %%
 """Explore house construction year and sale price with an exponential trend.
 
-Run in Jupyter: %run explore_year_built_exponential.py
+Run in Jupyter from repository root:
+    %run analysis/exponential/explore_year_built_exponential.py
 Dependencies: %pip install pandas numpy matplotlib
 
-Reads AmesHousing-Cleaned.csv. Writes only files with the new
-year_built_exponential prefix, preserving the earlier linear analysis.
+Reads analysis/cleaning/AmesHousing-Cleaned.csv. Outputs stay in
+analysis/exponential with the year_built_exponential prefix.
+When pasting into Jupyter, use a working directory inside this repository.
 The curve is fitted by least squares on log prices, not on dollar prices.
 It describes fitted geometric mean prices; no arithmetic-mean correction
 is applied. Year Built is the house construction year, not the lot's age.
@@ -32,8 +34,16 @@ def r_squared(actual, fitted):
 
 
 def explore_year_built_exponential(input_path=None):
-    base = Path(__file__).resolve().parent if "__file__" in globals() else Path.cwd()
-    source = Path(input_path) if input_path is not None else base / "AmesHousing-Cleaned.csv"
+    start = Path(__file__).resolve().parent if "__file__" in globals() else Path.cwd()
+    analysis_dir = next(
+        (root / "analysis" for root in (start, *start.parents)
+         if (root / "analysis" / "cleaning").is_dir()),
+        None,
+    )
+    if analysis_dir is None:
+        raise FileNotFoundError("Run from within the repository containing analysis/cleaning.")
+    base = analysis_dir / "exponential"
+    source = Path(input_path) if input_path is not None else analysis_dir / "cleaning" / "AmesHousing-Cleaned.csv"
     data = pd.read_csv(source)
     numeric_controls = ["Year Built", "Gr Liv Area", "Overall Qual", "Overall Cond", "Lot Area"]
     required = numeric_controls + ["SalePrice", "Neighborhood", "Yr Sold"]
@@ -77,14 +87,14 @@ def explore_year_built_exponential(input_path=None):
          "Log-price R squared": r_squared(log_prices, adjusted_fitted_log),
          "Dollar-price R squared": r_squared(prices, np.exp(adjusted_fitted_log))},
     ])
-    model_summary.to_csv(source.with_name("year_built_exponential_model_summary.csv"), index=False)
+    model_summary.to_csv(base / "year_built_exponential_model_summary.csv", index=False)
 
     working["Construction decade"] = (working["Year Built"] // 10 * 10).astype(int)
     decade_summary = working.groupby("Construction decade")["SalePrice"].agg(
         Sales="count", Mean="mean", Median="median",
         Geometric_mean=lambda values: np.exp(np.log(values).mean()),
     )
-    decade_summary.to_csv(source.with_name("year_built_exponential_decade_summary.csv"))
+    decade_summary.to_csv(base / "year_built_exponential_decade_summary.csv")
 
     print(f"Analyzed {len(working):,} of {len(data):,} rows; sales from "
           f"{working['Yr Sold'].min():.0f} to {working['Yr Sold'].max():.0f}.")
@@ -128,7 +138,7 @@ def explore_year_built_exponential(input_path=None):
     for axis in axes:
         axis.yaxis.set_major_formatter(FuncFormatter(lambda value, _: f"${value / 1000:,.0f}k"))
     fig.suptitle(f"Ames housing: {100 * np.expm1(10 * slope):.1f}% higher fitted price per decade newer", fontsize=15)
-    chart_path = source.with_name("year_built_exponential_sale_price.png")
+    chart_path = base / "year_built_exponential_sale_price.png"
     fig.savefig(chart_path, dpi=180)
     print(f"\nSaved chart: {chart_path.resolve()}")
     # Save the chart in terminal sessions; display it in Jupyter or GUI sessions.

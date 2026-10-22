@@ -1,9 +1,11 @@
 # %%
 """Explore construction year and sale price in AmesHousing-Cleaned.csv.
 
-Jupyter usage: %run explore_year_built.py
+Jupyter usage from repository root: %run analysis/linear/explore_year_built_linear.py
 Dependencies: %pip install pandas numpy matplotlib
-Outputs: year_built_sale_price.png and year_built_decade_summary.csv.
+Reads analysis/cleaning/AmesHousing-Cleaned.csv. Outputs stay in analysis/linear:
+year_built_linear_sale_price.png and year_built_linear_decade_summary.csv.
+When pasting into Jupyter, use a working directory inside this repository.
 Year Built describes the house's construction, not when its lot was created.
 """
 
@@ -26,8 +28,16 @@ def fit_linear(features, target):
 
 
 def explore_year_built(input_path=None):
-    base = Path(__file__).resolve().parent if "__file__" in globals() else Path.cwd()
-    source = Path(input_path) if input_path is not None else base / "AmesHousing-Cleaned.csv"
+    start = Path(__file__).resolve().parent if "__file__" in globals() else Path.cwd()
+    analysis_dir = next(
+        (root / "analysis" for root in (start, *start.parents)
+         if (root / "analysis" / "cleaning").is_dir()),
+        None,
+    )
+    if analysis_dir is None:
+        raise FileNotFoundError("Run from within the repository containing analysis/cleaning.")
+    base = analysis_dir / "linear"
+    source = Path(input_path) if input_path is not None else analysis_dir / "cleaning" / "AmesHousing-Cleaned.csv"
     data = pd.read_csv(source)
     numeric_controls = ["Year Built", "Gr Liv Area", "Overall Qual", "Overall Cond", "Lot Area"]
     required = numeric_controls + ["SalePrice", "Neighborhood", "Yr Sold"]
@@ -45,7 +55,7 @@ def explore_year_built(input_path=None):
         Q1=lambda values: values.quantile(0.25),
         Q3=lambda values: values.quantile(0.75),
     )
-    decade_summary.to_csv(source.with_name("year_built_decade_summary.csv"))
+    decade_summary.to_csv(base / "year_built_linear_decade_summary.csv")
 
     simple_coefficients, simple_r2 = fit_linear(working[["Year Built"]], working["SalePrice"])
     categories = pd.get_dummies(
@@ -99,7 +109,7 @@ def explore_year_built(input_path=None):
         axis.yaxis.set_major_formatter(FuncFormatter(lambda value, _: f"${value / 1000:,.0f}k"))
         axis.grid(axis="y", alpha=0.2)
     fig.suptitle("Ames housing: construction year and historical sale price", fontsize=15)
-    chart_path = source.with_name("year_built_sale_price.png")
+    chart_path = base / "year_built_linear_sale_price.png"
     fig.savefig(chart_path, dpi=180)
     print(f"\nSaved chart: {chart_path.resolve()}")
     plt.show()

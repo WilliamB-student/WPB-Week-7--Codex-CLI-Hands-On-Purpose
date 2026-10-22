@@ -1,0 +1,10 @@
+You: Files have been moved to the analysis folder in the repository and then into subfolders. Update all Python code so that it properly finds the files using a relative file path. Do not adjust artifacts produced by the code, as no values were changed. Do not produce new files; just update the ones that exist.
+
+Codex: Updated all four existing Python scripts to use relative paths for the new folder structure.
+
+Cleaning reads from analysis/initial data.
+Analyses read from analysis/cleaning.
+Future outputs go into each script’s matching subfolder.
+Jupyter instructions reflect the new paths.
+
+All four passed syntax checks. No new files were created, and existing artifacts were untouched.

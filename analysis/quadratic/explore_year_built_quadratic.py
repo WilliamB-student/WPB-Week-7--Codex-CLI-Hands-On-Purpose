@@ -1,9 +1,12 @@
 # %%
 """Quadratic analysis of house construction year and sale price.
 
-Jupyter: %run explore_year_built_quadratic.py
+Jupyter from repository root:
+    %run analysis/quadratic/explore_year_built_quadratic.py
 Dependencies: %pip install pandas numpy matplotlib
-Reads AmesHousing-Cleaned.csv; all outputs use year_built_quadratic names.
+Reads analysis/cleaning/AmesHousing-Cleaned.csv; outputs stay in
+analysis/quadratic using year_built_quadratic names.
+When pasting into Jupyter, use a working directory inside this repository.
 Earlier analysis files are preserved. Fits dollar prices by least squares.
 """
 
@@ -35,8 +38,16 @@ def decade_difference(coefficients, year):
 
 
 def explore_year_built_quadratic(input_path=None):
-    base = Path(__file__).resolve().parent if "__file__" in globals() else Path.cwd()
-    source = Path(input_path) if input_path is not None else base / "AmesHousing-Cleaned.csv"
+    start = Path(__file__).resolve().parent if "__file__" in globals() else Path.cwd()
+    analysis_dir = next(
+        (root / "analysis" for root in (start, *start.parents)
+         if (root / "analysis" / "cleaning").is_dir()),
+        None,
+    )
+    if analysis_dir is None:
+        raise FileNotFoundError("Run from within the repository containing analysis/cleaning.")
+    base = analysis_dir / "quadratic"
+    source = Path(input_path) if input_path is not None else analysis_dir / "cleaning" / "AmesHousing-Cleaned.csv"
     data = pd.read_csv(source)
     controls = ["Gr Liv Area", "Overall Qual", "Overall Cond", "Lot Area"]
     required = ["Year Built", "SalePrice", "Neighborhood", "Yr Sold", *controls]
@@ -72,9 +83,9 @@ def explore_year_built_quadratic(input_path=None):
             ("Quadratic: adjusted", fitted_adjusted, "SalePrice"),
         ]
     ])
-    comparison.to_csv(source.with_name("year_built_quadratic_model_summary.csv"), index=False)
+    comparison.to_csv(base / "year_built_quadratic_model_summary.csv", index=False)
     pd.concat([quadratic.rename("Quadratic: year only"), adjusted.rename("Quadratic: adjusted")],
-              axis=1).rename_axis("Term").to_csv(source.with_name("year_built_quadratic_coefficients.csv"))
+              axis=1).rename_axis("Term").to_csv(base / "year_built_quadratic_coefficients.csv")
 
     starting_years = [year for year in [1900, 1930, 1950, 1970, 1990, 2000]
                       if working["Year Built"].min() <= year <= working["Year Built"].max() - 10]
@@ -84,14 +95,14 @@ def explore_year_built_quadratic(input_path=None):
         "Unadjusted price difference USD": [decade_difference(quadratic, year) for year in starting_years],
         "Adjusted price difference USD": [decade_difference(adjusted, year) for year in starting_years],
     })
-    contrasts.to_csv(source.with_name("year_built_quadratic_decade_differences.csv"), index=False)
+    contrasts.to_csv(base / "year_built_quadratic_decade_differences.csv", index=False)
     working["Construction decade"] = (working["Year Built"] // 10 * 10).astype(int)
     working["Quadratic fitted price"] = fitted
     decade_summary = working.groupby("Construction decade").agg(
         Sales=("SalePrice", "count"), Mean=("SalePrice", "mean"), Median=("SalePrice", "median"),
         Mean_quadratic_fitted_price=("Quadratic fitted price", "mean"),
     )
-    decade_summary.to_csv(source.with_name("year_built_quadratic_decade_summary.csv"))
+    decade_summary.to_csv(base / "year_built_quadratic_decade_summary.csv")
 
     print(f"Analyzed {len(working):,} of {len(data):,} sales from "
           f"{working['Yr Sold'].min():.0f} to {working['Yr Sold'].max():.0f}.")
@@ -137,7 +148,7 @@ def explore_year_built_quadratic(input_path=None):
         axis.grid(axis="y", alpha=0.2)
         axis.legend(fontsize=9)
     fig.suptitle("Ames housing: quadratic relationship between construction year and sale price", fontsize=14)
-    chart_path = source.with_name("year_built_quadratic_sale_price.png")
+    chart_path = base / "year_built_quadratic_sale_price.png"
     fig.savefig(chart_path, dpi=180)
     print(f"\nSaved chart: {chart_path.resolve()}")
     if str(plt.get_backend()).lower() != "agg":

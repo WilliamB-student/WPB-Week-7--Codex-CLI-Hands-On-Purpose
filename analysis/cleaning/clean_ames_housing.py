@@ -1,12 +1,14 @@
 # %%
 """Clean AmesHousing-1.csv and write AmesHousing-Cleaned.csv.
 
-In Jupyter Notebook, run this file in a cell with:
-    %run clean_ames_housing.py
+In Jupyter Notebook, run this file from the repository root with:
+    %run analysis/cleaning/clean_ames_housing.py
 
 The cleaned DataFrame will be available as ``cleaned_data``. Install pandas
 first if needed by running ``%pip install pandas`` in a notebook cell.
 You can also paste this file into a notebook cell or run it with Python.
+When pasting, use a working directory inside this repository. Paths are
+resolved relative to its analysis folder; output goes in analysis/cleaning.
 """
 
 from pathlib import Path
@@ -22,11 +24,21 @@ def clean_ames_housing(input_path=None, output_path=None):
     Documented optional features use 'None' when absent; ambiguous missing
     feature descriptions use 'Unknown'. No outliers or columns are dropped.
     """
-    base_dir = Path(__file__).resolve().parent if "__file__" in globals() else Path.cwd()
-    source = Path(input_path) if input_path is not None else base_dir / "AmesHousing-1.csv"
+    start = Path(__file__).resolve().parent if "__file__" in globals() else Path.cwd()
+    analysis_dir = next(
+        (root / "analysis" for root in (start, *start.parents)
+         if (root / "analysis" / "cleaning").is_dir()),
+        None,
+    )
+    if analysis_dir is None:
+        raise FileNotFoundError("Run from within the repository containing analysis/cleaning.")
+    source = (
+        Path(input_path) if input_path is not None
+        else analysis_dir / "initial data" / "AmesHousing-1.csv"
+    )
     destination = (
         Path(output_path) if output_path is not None
-        else source.with_name("AmesHousing-Cleaned.csv")
+        else analysis_dir / "cleaning" / "AmesHousing-Cleaned.csv"
     )
     if source.resolve() == destination.resolve():
         raise ValueError("The output path must differ from the original dataset path.")
