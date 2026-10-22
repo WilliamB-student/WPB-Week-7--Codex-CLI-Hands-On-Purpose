@@ -1,0 +1,5 @@
+Model,Rows,Dollar-price R squared,Dollar-price RMSE,Fit target
+Linear: year only,2930,0.31183971554072076,66259.03674635358,SalePrice
+Exponential: year only,2930,0.3243013144008865,65656.36770175007,log(SalePrice)
+Quadratic: year only,2930,0.3870878330445279,62531.58499166907,SalePrice
+Quadratic: adjusted,2930,0.8196886311442109,33916.56573587213,SalePrice

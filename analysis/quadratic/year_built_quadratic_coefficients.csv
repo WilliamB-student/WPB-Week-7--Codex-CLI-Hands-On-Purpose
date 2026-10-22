@@ -1,0 +1,39 @@
+Term,Quadratic: year only,Quadratic: adjusted
+Intercept,157686.57222281295,167730.57889621356
+Year offset,1825.2844170283568,684.4965580125672
+Year offset squared,22.518412683128872,2.584097580807331
+Gr Liv Area,,54.964120867145624
+Overall Qual,,17870.413938393416
+Overall Cond,,6535.818268260254
+Lot Area,,1.035612194762507
+Neighborhood_Blueste,,-15375.754246986355
+Neighborhood_BrDale,,-25067.80838658893
+Neighborhood_BrkSide,,11340.774766538801
+Neighborhood_ClearCr,,17181.59671753312
+Neighborhood_CollgCr,,6072.605936477121
+Neighborhood_Crawfor,,32074.83643724182
+Neighborhood_Edwards,,-1019.7303596188367
+Neighborhood_Gilbert,,-9853.586473217045
+Neighborhood_Greens,,13159.169448475073
+Neighborhood_GrnHill,,90816.06171595452
+Neighborhood_IDOTRR,,2322.377821232738
+Neighborhood_Landmrk,,-25819.644834081064
+Neighborhood_MeadowV,,-9860.598183994334
+Neighborhood_Mitchel,,4930.461800374086
+Neighborhood_NAmes,,8630.646251111844
+Neighborhood_NPkVill,,-11624.35961659313
+Neighborhood_NWAmes,,-391.83185314106777
+Neighborhood_NoRidge,,57571.034744415396
+Neighborhood_NridgHt,,67210.26699578983
+Neighborhood_OldTown,,6.7653051585202775
+Neighborhood_SWISU,,-2666.6506839792655
+Neighborhood_Sawyer,,8964.525896990497
+Neighborhood_SawyerW,,-5636.704193408383
+Neighborhood_Somerst,,13661.088759818602
+Neighborhood_StoneBr,,72177.76071869594
+Neighborhood_Timber,,23246.088301806667
+Neighborhood_Veenker,,28023.122377583088
+Yr Sold_2007,,-1387.9293157560041
+Yr Sold_2008,,-2697.0659296992235
+Yr Sold_2009,,-1380.538723234291
+Yr Sold_2010,,-1398.4741643082052

@@ -1,0 +1,3 @@
+Model,Year coefficient,Percent difference per newer construction year,Percent difference per 10 newer construction years,Log-price R squared,Dollar-price R squared
+Exponential: construction year only,0.008294277835056978,0.8328770655854585,8.647963661258535,0.3788211568644796,0.3243013144008863
+Exponential: adjusted,0.003769532941040488,0.3776646565876512,3.841481022613144,0.8570968309325985,0.8095951630387177

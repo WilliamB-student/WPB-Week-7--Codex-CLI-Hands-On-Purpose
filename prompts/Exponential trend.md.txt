@@ -1,0 +1,25 @@
+You Using the data from the AmesHousing-Cleaned CSV, explore the effect of the year built for a lot on the sale price.
+
+Codex Analyzed 2,930 sales. Year Built refers to the house’s construction year.
+
+Newer houses generally sold for more
+
+Construction year and sale price had a correlation of 0.558.
+
+Construction 10 years later was associated with a $14,750 higher sale price.
+
+After accounting for living area, quality, condition, lot area, neighborhood, and sale year, the difference was $5,972.
+
+Construction year alone explained 31.2% of price variation.
+
+These are associations, not proven causal effects. Prices reflect sales from 2006–2010.
+
+Created
+
+explore_year_built.py
+year_built_sale_price.png
+year_built_decade_summary.csv
+
+Run in Jupyter Notebook
+
+%run explore_year_built.py

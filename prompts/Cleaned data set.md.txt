@@ -1,0 +1,9 @@
+You: Create a new file that loads AmesHousing-1 and cleans the data using Python. Make sure the program can run in Jupyter Notebook. Have the program create a CSV of the new dataset as AmesHousing-Cleaned.
+
+Codex: Created clean_ames_housing.py, installed pandas, and ran the program successfully. It produced AmesHousing-Cleaned.csv with 2,930 rows and 82 columns. The program trims text, handles missing values, removes duplicates, and preserves property IDs.
+
+Run it in Jupyter Notebook with:
+
+%run clean_ames_housing.py
+
+The cleaned dataset is available as cleaned_data.
